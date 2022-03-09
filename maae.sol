@@ -51,11 +51,10 @@ constructor(address _arbiter, address _beneficiary, uint _date, uint _percentage
 
 
 function depositMoney (uint256 _amount) external {
+        require (msg.sender == depositor);
         amount = _amount;
         require(dai.transferFrom(msg.sender, address(this), amount));
         aaveLendingPool.deposit(address(dai), _amount, 0);
-
-
     }
 
 function oracle (uint _grossRevenue) external {
@@ -73,12 +72,9 @@ function withdrawMoney() external {
 
         uint amountToWithdraw = (grossRevenue).div(100).mul(percentage);
 
-
         aDai.approve(address(aaveLendingPool), type(uint).max);
         aaveLendingPool.withdraw(address(dai), amountToWithdraw, beneficiary);
         aaveLendingPool.withdraw(address(dai), type(uint).max, depositor);
-
-        
 
     }
     
